@@ -125,7 +125,7 @@ strong.numa { font-weight: 800; }
       <p class="slogan">Orden para tu día, <em>tranquilidad para tu familia.</em></p>
       <p class="lead"><strong class="numa">Numa</strong> recuerda cada medicamento, organiza las citas médicas y digitaliza recetas a partir de una sola foto.</p>
       <div class="actions">
-        <a class="btn btn-primary" id="apk-hero" href="Numa.apk" download>
+        <a class="btn btn-primary" id="apk-hero" href="https://github.com/i4lxx/numa-app/releases/latest/download/Numa.apk">
           <span class="ic"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
           Descargar para Android
         </a>
@@ -203,9 +203,9 @@ strong.numa { font-weight: 800; }
       <div class="dl-top">
         <div>
           <h2>Descarga <strong class="numa">Numa</strong> para Android</h2>
-          <p>Archivo APK gratuito. La versión para iPhone llegará más adelante.</p>
+          <p>Archivo APK gratuito<span id="apk-version"></span>. La versión para iPhone llegará más adelante.</p>
         </div>
-        <a class="btn btn-primary" id="apk-main" href="Numa.apk" download>
+        <a class="btn btn-primary" id="apk-main" href="https://github.com/i4lxx/numa-app/releases/latest/download/Numa.apk">
           <span class="ic"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
           Descargar APK
         </a>
@@ -221,9 +221,18 @@ strong.numa { font-weight: 800; }
 <div class="bar" aria-hidden="true"><span style="background:var(--c-chat)"></span><span style="background:var(--c-med)"></span><span style="background:var(--c-cita)"></span><span style="background:var(--c-rec)"></span><span style="background:var(--c-seg)"></span><span style="background:var(--c-his)"></span></div>
 
 <script>
-// Si el APK se sube a GitHub Releases, pega aquí ese enlace. Si se sube junto a esta página, déjalo como "Numa.apk".
-const APK_URL = "Numa.apk";
+// El botón siempre descarga la versión más reciente publicada en GitHub Releases.
+const REPO = "i4lxx/numa-app";
+const APK_URL = "https://github.com/" + REPO + "/releases/latest/download/Numa.apk";
 document.querySelectorAll('#apk-hero, #apk-main').forEach(a => { a.href = APK_URL; });
+fetch("https://api.github.com/repos/" + REPO + "/releases/latest")
+  .then(r => r.ok ? r.json() : null)
+  .then(rel => {
+    if (!rel || !rel.tag_name) return;
+    const fecha = new Date(rel.published_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('apk-version').textContent = " · versión " + rel.tag_name.replace(/^v/, '') + ", publicada el " + fecha;
+  })
+  .catch(() => {});
 
 const video = document.getElementById('video');
 const marks = [...document.querySelectorAll('[data-t]')];
